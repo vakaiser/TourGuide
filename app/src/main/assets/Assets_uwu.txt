@@ -1,0 +1,11 @@
+0Land#1Bevölkerungszahl#2Hauptstadt#3Beschreibung#4SehenswürdigkeitenA!B!C!D#5FoodA!B!C!D;
+Frankreich#66993000#Paris#Frankreich ist ein demokratischer, interkontinentaler Einheitsstaat in Westeuropa.#Eiffelturm!Louvre!Notre-Dame!Schloss Versailles#Coq au Vin!Baguette!Creme brulee!Cassoulet;
+Finnland#5517919#Helsinki#Finnland ist eine parlamentarische Republik in Nordeuropa.#Suomenlinna!Dom zu Helsinki!Temppeliaukio-Kirche!Schneeburg von Kemi#Karelische Pirogge!Vorschmack!Mämmi!Viili;
+Liechtenstein#38650#Vaduz#Liechtenstein ist ein Fürstentum, das als konstitutionelle Erbmonarchie auf demokratisch-parlamentarischer Grundlage organisiert ist.#Fürstensteig!Postmuseum!Burg Gutenberg!Schloss Vaduz#Käsknöpfle!Ribel!Saukerkas!Vaduzer;
+Italien#60262701#Rom#Italien ist eine parlamentarische Republik in Südeuropa#Kolosseum!Pantheon!Trevi Brunnen!Schiefer Turm Von Pisa#Pane Frattau!Saltimbocca!Caprese Crema!Risotto;
+Kanada#37894799#Ottawa#Kanada ist ein auf dem Westminster-System basierender parlamentarisch-demokratischer Bundesstaat und eine parlamentarische Monarchie.#Banff-Nationalpark!Butchart Gardens!Moraine Lake!Horseshoe Falls#Poutine!Pierogis!Pancakes mit Ahornsirup!Beaver Tails;
+China#1400050000#Peking#Gemäß ihrer Verfassung steht die Volksrepublik China „unter der demokratischen Diktatur des Volkes“, wird jedoch seit 1949 autoritär von der Kommunistischen Partei Chinas regiert.#Verbotene Stadt!Chinesische Mauer!Himmelsaltar!Yu Yuan#Peking Ente!Jianbing!Sichuan Feuertopf!Mapo Tofu;
+Japan#126860000#Tokio#Japan ist eine parlamentarische Erbmonarchie und der einzige Staat mit einem Kaiser.#Fushimi Inari-Taisha!Asakusa-Schrein!Osaka Castle!Arashiyama#Dango!Ramen!Mochi!Onigiri;
+Neuseeland#4793700#Wellington#Neuseeland ist eine parlamentarische Monarchie und ein geographisch isolierter Inselstaat im südlichen Pazifik.#Milford Sound!Waitomo-Distrikt!Sky Tower!Lake Wakatipu#Pavlova!Kumara!Christmas Cake!Austern;
+Serbien#7057666#Belgrad#Serbien ist eine parlamentarische Republik in Südost- und Mitteleropa.#Kalemegdan Park!Dom des Heiligen Sava!Knez Mihailova ulica!Nikola-Tesla-Museum#Papazjanija!Pljeskavica!Sarma!Pirotski kackavalj;
+Aegypten#98435595#Kairo#Aegypten ist eine Republik im Nordosten Afrikas.#Pyramiden von Gizeh!Tal der Könige!Karnak-Tempel!Grosze Sphinx von Gizeh#Falafel!Kuschari!Schawarma!Karkade
