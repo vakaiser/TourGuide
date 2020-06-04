@@ -1,6 +1,8 @@
 package at.htlgkr.tourguide;
 
-public class Sehenswuerdigkeiten {
+import java.io.Serializable;
+
+public class Sehenswuerdigkeiten implements Serializable {
 
     private String name = "";
     private String details = "";
@@ -24,5 +26,10 @@ public class Sehenswuerdigkeiten {
 
     public void setDetails(String details) {
         this.details = details;
+    }
+
+    @Override
+    public String toString() {
+        return name;
     }
 }

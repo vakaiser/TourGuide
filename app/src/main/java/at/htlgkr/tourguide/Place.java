@@ -1,6 +1,8 @@
 package at.htlgkr.tourguide;
 
-public class Place extends Sehenswuerdigkeiten {
+import java.io.Serializable;
+
+public class Place extends Sehenswuerdigkeiten implements Serializable {
 
     private double lat;
     private double lon;

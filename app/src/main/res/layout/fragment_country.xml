@@ -6,40 +6,76 @@
     android:orientation="vertical"
     tools:context=".CountryFragment">
 
-    <ImageView
-        android:id="@+id/imageView2"
+    <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:adjustViewBounds="true"
-        android:textAlignment="textEnd" />
+        android:layout_height="match_parent">
 
-    <TextView
-        android:id="@+id/frag_country_title"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="TextView" />
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:paddingHorizontal="5dp">
 
-    <TextView
-        android:id="@+id/frag_country_population"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="TextView" />
+            <TextView
+                android:id="@+id/frag_country_title"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingVertical="5dp"
+                android:text="TextView"
+                android:textAlignment="center"
+                android:textColor="#000000"
+                android:textSize="24sp"
+                android:textStyle="bold" />
 
-    <TextView
-        android:id="@+id/frag_country_capitol"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="TextView" />
+            <ImageView
+                android:id="@+id/imageView2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:adjustViewBounds="true"
+                android:paddingBottom="7dp"
+                android:textAlignment="center" />
 
-    <TextView
-        android:id="@+id/frag_country_description"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="TextView" />
+            <TextView
+                android:id="@+id/frag_country_capitol"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingVertical="3dp"
+                android:text="TextView"
+                android:textColor="#000000"
+                android:textSize="18sp" />
 
-    <ListView
-        android:id="@+id/frag_country_lists"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+            <TextView
+                android:id="@+id/frag_country_population"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingVertical="3dp"
+                android:text="TextView"
+                android:textColor="#000000"
+                android:textSize="18sp" />
+
+            <TextView
+                android:id="@+id/frag_country_description"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingVertical="3dp"
+                android:text="TextView"
+                android:textColor="#000000"
+                android:textSize="18sp" />
+
+            <Button
+                android:id="@+id/frag_country_seh_btn"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Sehenswürdigkeiten" />
+
+            <Button
+                android:id="@+id/frag_country_food_btn"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Speisen und Getränke" />
+
+        </LinearLayout>
+    </ScrollView>
 
 </LinearLayout>
