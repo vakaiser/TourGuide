@@ -13,8 +13,11 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
+
+import com.squareup.picasso.Picasso;
 
 import java.io.Serializable;
 import java.time.LocalDate;
@@ -34,6 +37,8 @@ public class CountryFragment extends Fragment {
     private TextView desc;
     private Button sehen;
     private Button food;
+
+    ImageView imageView;
 
     private OnSelectionChangedListener listener;
 
@@ -80,6 +85,8 @@ public class CountryFragment extends Fragment {
         population = v.findViewById(R.id.frag_country_population);
         capitol = v.findViewById(R.id.frag_country_capitol);
         desc = v.findViewById(R.id.frag_country_description);
+
+        imageView = v.findViewById(R.id.imageView2);
     }
 
     @Override
@@ -101,9 +108,11 @@ public class CountryFragment extends Fragment {
 
     public void showInformation(Country item) {
         title.setText(item.getName());
-        population.setText(item.getPopulation() + "");
-        capitol.setText(item.getCapitol());
+        population.setText(item.getPopulation() + " Einwohner");
+        capitol.setText("Hauptstadt: " + item.getCapitol());
         desc.setText(item.getDescription());
+
+        Picasso.get().load((new CountryAdapter(null, null)).countryPicture(item)).resize(750, 520).into(imageView);
     }
 
 

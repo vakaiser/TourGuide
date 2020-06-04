@@ -51,7 +51,7 @@ public class CountryAdapter extends BaseAdapter {
         Country currentCountry = (Country) getItem(position);
         Picasso.get().load(countryPicture(currentCountry)).into(viewHolder.imageView);
 
-        //((TextView)(convertView.findViewById(R.id.textView))).setText(currentCountry.getName());
+        ((TextView)(convertView.findViewById(R.id.textView))).setText(currentCountry.getName());
 
         return convertView;
     }
@@ -64,7 +64,7 @@ public class CountryAdapter extends BaseAdapter {
         }
     }
 
-    private String countryPicture(Country c) {
+    public String countryPicture(Country c) {
         String url = "";
         switch(c.getName().toUpperCase()){
             case "FRANKREICH":
