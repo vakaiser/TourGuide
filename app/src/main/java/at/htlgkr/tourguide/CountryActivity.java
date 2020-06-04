@@ -3,7 +3,9 @@ package at.htlgkr.tourguide;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
+import android.widget.LinearLayout;
 
 import java.io.Serializable;
 
@@ -18,6 +20,7 @@ public class CountryActivity extends AppCompatActivity implements OnSelectionCha
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_country);
+
 
         readExtra();
 
@@ -46,4 +49,6 @@ public class CountryActivity extends AppCompatActivity implements OnSelectionCha
         country = (Country) intent.getSerializableExtra("item");
         deets.showInformation(country);
     }
+
+
 }

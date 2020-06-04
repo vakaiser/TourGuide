@@ -1,6 +1,8 @@
 package at.htlgkr.tourguide;
 
 import android.content.Context;
+import android.content.SharedPreferences;
+import android.graphics.Color;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,10 +18,17 @@ public class CountryAdapter extends BaseAdapter {
 
     private Context context;
     private List<Country> countries;
+    private int layoutId ;
+    private LayoutInflater inflater;
+    private SharedPreferences sharedPreferences;
 
-    public CountryAdapter(Context context, List<Country> countries) {
+    public CountryAdapter(Context context, int layoutId, List<Country> countries, SharedPreferences sharedPreferences) {
         this.context = context;
         this.countries = countries;
+        this.layoutId = layoutId;
+        this.inflater = ( LayoutInflater ) context .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+
+        this.sharedPreferences = sharedPreferences;
     }
 
     @Override
@@ -40,6 +49,7 @@ public class CountryAdapter extends BaseAdapter {
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
         ViewHolder viewHolder;
+        View listItem = (convertView == null) ? inflater.inflate( this.layoutId, null ) : convertView;
         if (convertView == null) {
             convertView = LayoutInflater.from(context).inflate(R.layout.country_view_item, parent, false);
             viewHolder = new ViewHolder(convertView);
@@ -49,9 +59,13 @@ public class CountryAdapter extends BaseAdapter {
         }
 
         Country currentCountry = (Country) getItem(position);
-        Picasso.get().load(countryPicture(currentCountry)).into(viewHolder.imageView);
+        Picasso.get().load(countryPicture(currentCountry)).resize(225,150).into(viewHolder.imageView);
 
-        ((TextView)(convertView.findViewById(R.id.textView))).setText(currentCountry.getName());
+        ((TextView)(convertView.findViewById(R.id.countryMainName))).setText(currentCountry.getName());
+
+        darkMode(listItem);
+
+        notifyDataSetChanged();
 
         return convertView;
     }
@@ -64,7 +78,16 @@ public class CountryAdapter extends BaseAdapter {
         }
     }
 
-    public String countryPicture(Country c) {
+    private void darkMode(View listItem) {
+        if (sharedPreferences.getBoolean("preference_dark_mode", false)) {
+            ((TextView) listItem .findViewById(R.id.countryMainName)).setTextColor(Color.parseColor("#E4E4E4"));
+        }
+        else {
+            ((TextView) listItem .findViewById(R.id.countryMainName)).setTextColor(Color.parseColor("#1a1a1a"));
+        }
+    }
+
+    public static String countryPicture(Country c) {
         String url = "";
         switch(c.getName().toUpperCase()){
             case "FRANKREICH":

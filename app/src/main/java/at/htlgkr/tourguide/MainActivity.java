@@ -4,34 +4,38 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.annotation.SuppressLint;
 import android.content.Intent;
-import android.content.res.AssetManager;
+import android.content.SharedPreferences;
+import android.graphics.Color;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
-import android.widget.AdapterView;
 import android.widget.GridView;
+import android.widget.LinearLayout;
 
 import java.io.BufferedReader;
-import java.io.File;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.Serializable;
-import java.nio.file.Files;
-import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 
 import at.htlgkr.tourguide.diary.DiaryActivity;
+import at.htlgkr.tourguide.preferences.SettingsActivity;
 
 public class MainActivity extends AppCompatActivity {
 
     private List<Country> countries = new ArrayList<>();
     private static final String ASSET_NAME = "Assets_uwu.txt";
 
+    public static SharedPreferences sharedPreferences;
+    private SharedPreferences.OnSharedPreferenceChangeListener preferencesChangeListener;
+
     private CountryAdapter countryAdapter;
+
+    public static boolean isDarkModeActive;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -43,8 +47,15 @@ public class MainActivity extends AppCompatActivity {
 
         GridView gridView = findViewById(R.id.main_countries);
 
-        countryAdapter = new CountryAdapter(this, countries);
-        gridView.setAdapter(countryAdapter);
+        sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
+        preferencesChangeListener = (sharedPrefs, key) -> preferenceChanged(sharedPrefs, key);
+
+        sharedPreferences.registerOnSharedPreferenceChangeListener(preferencesChangeListener);
+
+
+
+        countryAdapter = new CountryAdapter(this, R.layout.country_view_item, countries, sharedPreferences);
+
 
         /*gridView.setOnItemClickListener(new AdapterView.OnItemClickListener(){
             @Override
@@ -63,6 +74,19 @@ public class MainActivity extends AppCompatActivity {
             intent.putExtra("item", (Serializable)item);
             startActivity(intent);
         });
+
+        sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
+        preferencesChangeListener = ((sharedPreferences, key) -> preferenceChanged(sharedPreferences, key));
+        sharedPreferences.registerOnSharedPreferenceChangeListener(preferencesChangeListener);
+
+        isDarkModeActive = sharedPreferences.getBoolean("preference_dark_mode", false);
+        voidoDarkuSama(isDarkModeActive);
+
+        gridView.setAdapter(countryAdapter);
+
+        countryAdapter.notifyDataSetChanged();
+
+
     }
 
 
@@ -143,7 +167,9 @@ public class MainActivity extends AppCompatActivity {
                 break;
 
             case R.id.menu_options:
-
+                Intent in = new Intent(this, SettingsActivity.class);
+                startActivity(in);
+                //startActivityForResult(in, 1);
                 break;
 
             default:
@@ -153,4 +179,66 @@ public class MainActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
 
     }
+
+    /*              - - - PREFERENCES - - -                */
+
+    /*private void preferenceChanged(SharedPreferences sharedPrefs, String key) {
+        Map<String, ?> allEntries = sharedPrefs. getAll () ;
+        boolean sValue = false;
+        if ( allEntries.get(key) instanceof Boolean) {
+            sValue = sharedPrefs.getBoolean(key, false);
+        }
+        Toast.makeText(this, key + " new Value: " + sValue, Toast.LENGTH_LONG).show();
+    }*/
+
+    private void preferenceChanged(SharedPreferences prefs, String key){
+        countryAdapter.notifyDataSetChanged();
+
+        Map<String, ?> allEntries = sharedPreferences.getAll () ;
+
+        if(allEntries.get(key)instanceof Boolean) {
+            switch (key){
+                case "preference_dark_mode":
+                    //GridLayout background = findViewById(R.id.background);
+                    boolean isDarkMode = prefs.getBoolean("preference_dark_mode",false);
+
+                    voidoDarkuSama(isDarkMode);
+                    countryAdapter.notifyDataSetChanged();
+
+                    break;
+                default:
+                    break;
+            }
+        }
+    }
+
+    private void voidoDarkuSama(boolean isDarkMode) {
+        String lol = "uwu";
+        lol = "uwu";
+
+        LinearLayout backgroundM = findViewById(R.id.backgroundMain);
+        //LinearLayout backgroundC = findViewById(R.id.backgroundCountry);
+        //LinearLayout backgroundD = findViewById(R.id.backgroundDiary);
+        if(isDarkMode){
+            isDarkModeActive = true;
+            backgroundM.setBackgroundColor(Color.parseColor("#1a1a1a"));
+            //backgroundC.setBackgroundColor(Color.parseColor("#1a1a1a"));
+            //backgroundD.setBackgroundColor(Color.parseColor("#1a1a1a"));
+            //updateTextColor(background, Color.parseColor("#ffffff"));
+            countryAdapter.notifyDataSetChanged();
+        }
+        else{
+            isDarkModeActive = false;
+            backgroundM.setBackgroundColor(Color.WHITE);
+            //backgroundC.setBackgroundColor(Color.parseColor("#E4E4E4"));
+            //backgroundD.setBackgroundColor(Color.parseColor("#E4E4E4"));
+            //updateTextColor(background, Color.parseColor("#000000"));
+            countryAdapter.notifyDataSetChanged();
+
+        }
+        countryAdapter.notifyDataSetChanged();
+    }
+
+
+    /*              - - - END OF PREFERENCES - - -              */
 }

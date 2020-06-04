@@ -2,6 +2,7 @@ package at.htlgkr.tourguide;
 
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
@@ -14,12 +15,14 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 
 import com.squareup.picasso.Picasso;
 
 import java.io.Serializable;
+import java.text.DecimalFormat;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
@@ -52,6 +55,8 @@ public class CountryFragment extends Fragment {
     }
 
     private void intitializeView(View v) {
+
+        voidoDarkuSama(MainActivity.isDarkModeActive, v);
         /*listView = v.findViewById(R.id.frag_country_lists);
         adapter = new ArrayAdapter(getActivity(), android.R.layout.simple_list_item_1, countries);
         listView.setAdapter(adapter);
@@ -87,6 +92,8 @@ public class CountryFragment extends Fragment {
         desc = v.findViewById(R.id.frag_country_description);
 
         imageView = v.findViewById(R.id.imageView2);
+
+
     }
 
     @Override
@@ -107,12 +114,38 @@ public class CountryFragment extends Fragment {
 
 
     public void showInformation(Country item) {
+
+        DecimalFormat df1 = new DecimalFormat( "#,###,###,###" );
+
         title.setText(item.getName());
-        population.setText(item.getPopulation() + " Einwohner");
+        population.setText(df1.format(item.getPopulation()) + " Einwohner");
         capitol.setText("Hauptstadt: " + item.getCapitol());
         desc.setText(item.getDescription());
 
-        Picasso.get().load((new CountryAdapter(null, null)).countryPicture(item)).resize(750, 520).into(imageView);
+        //Picasso.get().load((new CountryAdapter(null, , null)).countryPicture(item)).resize(750, 520).into(imageView);
+        Picasso.get().load(CountryAdapter.countryPicture(item)).resize(750, 520).into(imageView);
+    }
+
+    private void voidoDarkuSama(boolean isDarkMode, View v) {
+
+        LinearLayout backgroundC = v.findViewById(R.id.backgroundCountry);
+        if(isDarkMode){
+            backgroundC.setBackgroundColor(Color.parseColor("#1a1a1a"));
+
+
+            ((TextView) v .findViewById(R.id.frag_country_description)).setTextColor(Color.parseColor("#E4E4E4"));
+            ((TextView) v .findViewById(R.id.frag_country_capitol)).setTextColor(Color.parseColor("#E4E4E4"));
+            ((TextView) v .findViewById(R.id.frag_country_title)).setTextColor(Color.parseColor("#E4E4E4"));
+            ((TextView) v .findViewById(R.id.frag_country_population)).setTextColor(Color.parseColor("#E4E4E4"));
+        }
+        else{
+            backgroundC.setBackgroundColor(Color.WHITE);
+
+            ((TextView) v .findViewById(R.id.frag_country_description)).setTextColor(Color.parseColor("#1a1a1a"));
+            ((TextView) v .findViewById(R.id.frag_country_capitol)).setTextColor(Color.parseColor("#1a1a1a"));
+            ((TextView) v .findViewById(R.id.frag_country_title)).setTextColor(Color.parseColor("#1a1a1a"));
+            ((TextView) v .findViewById(R.id.frag_country_population)).setTextColor(Color.parseColor("#1a1a1a"));
+        }
     }
 
 

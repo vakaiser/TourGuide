@@ -10,6 +10,7 @@ import android.app.DatePickerDialog;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Environment;
 import android.preference.PreferenceManager;
@@ -20,6 +21,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.Toast;
 
@@ -74,6 +76,8 @@ public class DiaryActivity extends AppCompatActivity {
         ListView listView = findViewById(R.id.diary_listview);
         registerForContextMenu(listView);
 
+        voidoDarkuSama(MainActivity.isDarkModeActive);
+
 
         /*sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
         preferencesChangeListener = (sharedPrefs, key) -> preferenceChanged(sharedPrefs, key);
@@ -95,7 +99,7 @@ public class DiaryActivity extends AppCompatActivity {
         } catch (Exception e) {
             e.printStackTrace();
         }
-        listView.setAdapter(diaryAdapter = new DiaryAdapter(this, R.layout.lv_item_layout, diaryList));//, sharedPreferences));
+        listView.setAdapter(diaryAdapter = new DiaryAdapter(this, R.layout.lv_item_layout, diaryList, MainActivity.sharedPreferences));
 
 
         diaryAdapter.notifyDataSetChanged();
@@ -330,5 +334,20 @@ public class DiaryActivity extends AppCompatActivity {
         diaryAdapter.notifyDataSetChanged();
         return super.onOptionsItemSelected(item);
 
+    }
+
+    private void voidoDarkuSama(boolean isDarkMode) {
+
+        //LinearLayout backgroundC = findViewById(R.id.backgroundCountry);
+        LinearLayout backgroundD = findViewById(R.id.backgroundDiary);
+        if(isDarkMode){
+            //backgroundC.setBackgroundColor(Color.parseColor("#1a1a1a"));
+            backgroundD.setBackgroundColor(Color.parseColor("#1a1a1a"));
+        }
+        else{
+            //backgroundC.setBackgroundColor(Color.parseColor("#E4E4E4"));
+            backgroundD.setBackgroundColor(Color.WHITE);
+
+        }
     }
 }
