@@ -37,7 +37,7 @@ public class CountryFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.fragment_country, container, false);
-        readExtra();
+        //readExtra();
         intitializeView(v);
         showInfo();
         return v;
@@ -79,14 +79,14 @@ public class CountryFragment extends Fragment {
         }
     }
 
-    private void readExtra() {
+    /*private void readExtra() {
         Intent intent = getIntent();
         if (intent == null) return;
         DetailFragment deets = (DetailFragment)getSupportFragmentManager().findFragmentById(R.id.frag_deets);
         int pos = intent.getIntExtra("pos", -1);
         Department item = (Department)intent.getSerializableExtra("item");
         deets.showInformation(pos, item);
-    }
+    }*/
 
     private void showInfo() {
 

@@ -1,0 +1,15 @@
+<menu xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item
+        android:id="@+id/menu_options"
+        android:icon="@android:drawable/ic_menu_preferences"
+        android:title="Optionen"
+        app:showAsAction="always" />
+    <item
+        android:id="@+id/menu_goToDiary"
+        android:icon="@android:drawable/ic_menu_edit"
+        android:title="Neue Aufgabe"
+        app:showAsAction="always" />
+
+</menu>
