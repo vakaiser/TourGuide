@@ -3,11 +3,14 @@ package at.htlgkr.tourguide;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.res.AssetManager;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.GridView;
+import android.widget.Toast;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -17,6 +20,7 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -24,6 +28,9 @@ public class MainActivity extends AppCompatActivity {
     private static final String ASSET_NAME = "Assets_uwu.txt";
 
     private CountryAdapter countryAdapter;
+
+    private SharedPreferences prefs;
+    private SharedPreferences.OnSharedPreferenceChangeListener preferenceChangeListener;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -55,6 +62,19 @@ public class MainActivity extends AppCompatActivity {
             intent.putExtra("item", (Serializable)item);
             startActivity(intent);
         });
+
+        prefs = PreferenceManager.getDefaultSharedPreferences(this);
+        preferenceChangeListener = ((sharedPreferences, key) -> preferenceChanged(sharedPreferences, key));
+    }
+
+
+    private void preferenceChanged(SharedPreferences sharedPrefs, String key) {
+        Map<String, ?> allEntries = sharedPrefs. getAll () ;
+        boolean sValue = false;
+        if ( allEntries.get(key) instanceof Boolean) {
+            sValue = sharedPrefs.getBoolean(key, false);
+        }
+        Toast.makeText(this, key + " new Value: " + sValue, Toast.LENGTH_LONG).show();
     }
 
 
