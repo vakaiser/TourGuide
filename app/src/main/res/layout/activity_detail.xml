@@ -4,14 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".CountryActivity">
-
-    <fragment
-        android:id="@+id/fragment_country_real"
-        android:name="at.htlgkr.tourguide.CountryFragment"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_weight="1" />
+    tools:context=".DetailActivity">
 
     <fragment
         android:id="@+id/fragment_details_real"

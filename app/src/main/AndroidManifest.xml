@@ -12,8 +12,8 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         android:usesCleartextTraffic="true">
-
-        <activity android:name=".CountryActivity"></activity>
+        <activity android:name=".DetailActivity"></activity>
+        <activity android:name=".CountryActivity" />
         <activity android:name=".DiaryActivity" />
         <activity android:name=".MainActivity">
             <intent-filter>

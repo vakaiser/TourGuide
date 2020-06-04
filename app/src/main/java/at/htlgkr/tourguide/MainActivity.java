@@ -2,14 +2,18 @@ package at.htlgkr.tourguide;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Intent;
 import android.content.res.AssetManager;
 import android.os.Bundle;
+import android.view.View;
+import android.widget.AdapterView;
 import android.widget.GridView;
 
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -33,6 +37,24 @@ public class MainActivity extends AppCompatActivity {
 
         countryAdapter = new CountryAdapter(this, countries);
         gridView.setAdapter(countryAdapter);
+
+        /*gridView.setOnItemClickListener(new AdapterView.OnItemClickListener(){
+            @Override
+            public void onItemClick(AdapterView<?> adapter, View v, int position){
+                Country item = (Country) adapter.getItemAtPosition(position);
+
+                Intent intent = new Intent(, CountryActivity.class);
+                intent.putExtra("item", (Serializable)item);
+                startActivity(intent);
+            }
+        });*/
+
+        gridView.setOnItemClickListener((parent, v, position, id) -> {
+            Country item = (Country) parent.getItemAtPosition(position);
+            Intent intent = new Intent(this, CountryActivity.class);
+            intent.putExtra("item", (Serializable)item);
+            startActivity(intent);
+        });
     }
 
 
