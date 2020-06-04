@@ -12,6 +12,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.ListView;
 import android.widget.TextView;
 
@@ -24,27 +25,29 @@ import java.util.List;
 public class CountryFragment extends Fragment {
 
     private static final String TAG = CountryFragment.class.getSimpleName();
-    private ArrayAdapter adapter;
-    private ListView listView;
+    //private ArrayAdapter adapter;
+    //private ListView listView;
+
     private TextView title;
     private TextView population;
     private TextView capitol;
     private TextView desc;
+    private Button sehen;
+    private Button food;
+
     private OnSelectionChangedListener listener;
 
-    private List<Country> countries;
+    private Country country;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.fragment_country, container, false);
-        readExtra();
         intitializeView(v);
-        showInfo();
         return v;
     }
 
     private void intitializeView(View v) {
-        listView = v.findViewById(R.id.frag_country_lists);
+        /*listView = v.findViewById(R.id.frag_country_lists);
         adapter = new ArrayAdapter(getActivity(), android.R.layout.simple_list_item_1, countries);
         listView.setAdapter(adapter);
         adapter.notifyDataSetChanged();
@@ -55,7 +58,23 @@ public class CountryFragment extends Fragment {
                 Country item = countries.get(position);
                 listener.onSelectionChanged(position, item);
             }
+        });*/
+        sehen = v.findViewById(R.id.frag_country_seh_btn);
+        food = v.findViewById(R.id.frag_country_food_btn);
+
+        sehen.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                listener.onSelectionChanged("sehen");
+            }
         });
+        food.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                listener.onSelectionChanged("food");
+            }
+        });
+
 
         title = v.findViewById(R.id.frag_country_title);
         population = v.findViewById(R.id.frag_country_population);
@@ -79,17 +98,12 @@ public class CountryFragment extends Fragment {
         }
     }
 
-    private void readExtra() {
-        Intent intent = getIntent();
-        if (intent == null) return;
-        DetailFragment deets = (DetailFragment)getSupportFragmentManager().findFragmentById(R.id.frag_deets);
-        int pos = intent.getIntExtra("pos", -1);
-        Department item = (Department)intent.getSerializableExtra("item");
-        deets.showInformation(pos, item);
-    }
 
-    private void showInfo() {
-
+    public void showInformation(Country item) {
+        title.setText(item.getName());
+        population.setText(item.getPopulation() + "");
+        capitol.setText(item.getCapitol());
+        desc.setText(item.getDescription());
     }
 
 

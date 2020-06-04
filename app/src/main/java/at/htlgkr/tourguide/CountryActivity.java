@@ -12,25 +12,38 @@ public class CountryActivity extends AppCompatActivity implements OnSelectionCha
     private DetailFragment detailFragment;
     private boolean showDetails = false;
 
+    private Country country;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_country);
+
+        readExtra();
 
         detailFragment = (DetailFragment)getSupportFragmentManager().findFragmentById(R.id.fragment_details_real);
         showDetails = detailFragment != null && detailFragment.isInLayout();
     }
 
     @Override
-    public void onSelectionChanged(int pos, Country item) {
-        if (showDetails) detailFragment.showInformation(pos, item);
-        else callDetails(pos, item);
+    public void onSelectionChanged(String type) {
+        if (showDetails) detailFragment.showInformation(type, country);
+        else callDetails(country, type);
     }
 
-    private void callDetails(int pos, Country item) {
+    private void callDetails(Country item, String type) {
         Intent intent = new Intent(this, DetailActivity.class);
-        intent.putExtra("pos", pos);
+        intent.putExtra("type", type);
         intent.putExtra("item", (Serializable)item);
         startActivity(intent);
+    }
+
+
+    private void readExtra() {
+        Intent intent = getIntent();
+        if (intent == null) return;
+        CountryFragment deets = (CountryFragment) getSupportFragmentManager().findFragmentById(R.id.fragment_country_real);
+        country = (Country) intent.getSerializableExtra("item");
+        deets.showInformation(country);
     }
 }

@@ -25,8 +25,8 @@ public class DetailActivity extends AppCompatActivity {
         Intent intent = getIntent();
         if (intent == null) return;
         DetailFragment deets = (DetailFragment)getSupportFragmentManager().findFragmentById(R.id.fragment_details_real);
-        int pos = intent.getIntExtra("pos", -1);
+        String type = intent.getStringExtra("type");
         Country item = (Country) intent.getSerializableExtra("item");
-        deets.showInformation(pos, item);
+        deets.showInformation(type, item);
     }
 }

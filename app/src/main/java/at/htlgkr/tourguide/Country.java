@@ -1,8 +1,9 @@
 package at.htlgkr.tourguide;
 
+import java.io.Serializable;
 import java.util.List;
 
-public class Country {
+public class Country implements Serializable {
 
     private String name;
     private int population;

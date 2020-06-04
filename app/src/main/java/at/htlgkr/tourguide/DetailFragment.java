@@ -47,8 +47,8 @@ public class DetailFragment extends Fragment {
         super.onStart();
     }
 
-    public void showInformation(int pos, Country item) {
-        sehenswuerdigkeiten = (pos == 0) ? item.getPlaces() : item.getFoods();
+    public void showInformation(String type, Country item) {
+        sehenswuerdigkeiten = (type.equals("sehen")) ? item.getPlaces() : item.getFoods();
         adapter = new ArrayAdapter(getActivity(), android.R.layout.simple_list_item_1, sehenswuerdigkeiten);
         listView.setAdapter(adapter);
         adapter.notifyDataSetChanged();
