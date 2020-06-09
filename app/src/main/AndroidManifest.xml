@@ -17,6 +17,7 @@
         android:usesCleartextTraffic="true">
         <activity android:name=".DetailActivity"></activity>
         <activity android:name=".CountryActivity" />
+        <activity android:name=".NotificationDetails"></activity>
         <activity android:name=".preferences.SettingsActivity" />
         <activity android:name=".diary.DiaryActivity" />
         <activity android:name=".MainActivity">
@@ -26,6 +27,7 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <service android:name=".MyService" />
     </application>
 
 </manifest>

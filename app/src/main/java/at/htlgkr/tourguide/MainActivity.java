@@ -3,13 +3,20 @@ package at.htlgkr.tourguide;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.annotation.SuppressLint;
+import android.app.Notification;
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
+import android.os.Build;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.GridView;
 import android.widget.LinearLayout;
 
@@ -27,7 +34,7 @@ import at.htlgkr.tourguide.preferences.SettingsActivity;
 
 public class MainActivity extends AppCompatActivity {
 
-    private List<Country> countries = new ArrayList<>();
+    public static List<Country> countries = new ArrayList<>();
     private static final String ASSET_NAME = "Assets_uwu.txt";
 
     public static SharedPreferences sharedPreferences;
@@ -36,6 +43,11 @@ public class MainActivity extends AppCompatActivity {
     private CountryAdapter countryAdapter;
 
     public static boolean isDarkModeActive;
+    private static final String TAG = MainActivity.class.getName();
+
+    private static final String CHANNEL_ID = "42069";
+    public static boolean isNotificationActive;
+    private Intent intentServ;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -82,11 +94,14 @@ public class MainActivity extends AppCompatActivity {
         isDarkModeActive = sharedPreferences.getBoolean("preference_dark_mode", false);
         voidoDarkuSama(isDarkModeActive);
 
+        isNotificationActive = sharedPreferences.getBoolean("preference_notification", false);
+
         gridView.setAdapter(countryAdapter);
 
         countryAdapter.notifyDataSetChanged();
 
-
+        createNotificationChannel();
+        startService();
     }
 
 
@@ -206,6 +221,19 @@ public class MainActivity extends AppCompatActivity {
                     countryAdapter.notifyDataSetChanged();
 
                     break;
+
+                case "preference_notification":
+                    boolean notificate = prefs.getBoolean("preference_notification",false);
+                    if (notificate){
+                        isNotificationActive = true;
+                        startService();
+                    }
+                    else  {
+                        isNotificationActive = false;
+                        stopService(intentServ);
+                    }
+                    break;
+
                 default:
                     break;
             }
@@ -229,7 +257,7 @@ public class MainActivity extends AppCompatActivity {
         }
         else{
             isDarkModeActive = false;
-            backgroundM.setBackgroundColor(Color.WHITE);
+            backgroundM.setBackgroundColor(Color.parseColor("#E4E4E4"));
             //backgroundC.setBackgroundColor(Color.parseColor("#E4E4E4"));
             //backgroundD.setBackgroundColor(Color.parseColor("#E4E4E4"));
             //updateTextColor(background, Color.parseColor("#000000"));
@@ -239,6 +267,34 @@ public class MainActivity extends AppCompatActivity {
         countryAdapter.notifyDataSetChanged();
     }
 
+    public void startService() { //View view
+        Log.d(TAG, "startService: entered");
 
-    /*              - - - END OF PREFERENCES - - -              */
+        // the service can use the data from the intent
+        String msg = "Service started from MainActivity";
+        intentServ = new Intent(this, MyService.class);
+        //intent.putExtra("msg", msg);
+        startService(intentServ);
+    }
+
+    private void createNotificationChannel() {
+        // Create the NotificationChannel, but only on API 26+ because
+        // the NotificationChannel class is new and not in the support library
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            CharSequence name = "uwugangriseup";//R.string.channel_name);
+            String description = "descwiptiono";//getString(R.string.channel_description);
+            int importance = NotificationManager.IMPORTANCE_DEFAULT;
+            NotificationChannel channel = new NotificationChannel(CHANNEL_ID, name, importance);
+            channel.setDescription(description);
+            // Register the channel with the system; you can't change the importance
+            // or other notification behaviors after this
+            NotificationManager notificationManager = getSystemService(NotificationManager.class);
+            notificationManager.createNotificationChannel(channel);
+        }
+    }
+
+    public static boolean uwunoises() {
+        return sharedPreferences.getBoolean("preference_notification",false);
+    }
+
 }
