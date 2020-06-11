@@ -47,17 +47,37 @@ public class MyService extends IntentService {
                 Thread.currentThread().getName());
 
         while (true) {
-            try {
-                LocalTime lt = LocalTime.now();
-                if (lt.equals(LocalTime.of(14,0)) || lt.equals(LocalTime.of(17,0))){//|| lt.equals(lt)) {
-                    showNotification();
-                }
+            if (MainActivity.isNotificationActive) {
+                try {
+                    LocalTime lt = LocalTime.now();
+                    if (lt.equals(LocalTime.of(14, 0)) || lt.equals(LocalTime.of(17, 0))) {//|| lt.equals(lt)) {
+                        showNotification();
+                    }
 
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
-            if (!MainActivity.isNotificationActive) break;
+            }
+
         }
+            //synchronized (this) {
+
+            //}
+
+
+        /*if (MainActivity.isNotificationActive) {
+            try {
+                LocalTime lt = LocalTime.now();
+                if (lt.equals(LocalTime.of(14,0)) || lt.equals(LocalTime.of(17,0))|| lt.equals(lt)) {
+                    showNotification();
+                }
+
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            onHandleIntent(intent);
+        }
+        else onHandleIntent(intent);
 
         /*for (int i=1; i<=3; i++) {
             Log.d(TAG, "onHandleIntent: ....working");

@@ -222,15 +222,15 @@ public class MainActivity extends AppCompatActivity {
 
                     break;
 
-                case "preference_notification":
-                    boolean notificate = prefs.getBoolean("preference_notification",false);
+                case "preference_notifications":
+                    boolean notificate = prefs.getBoolean("preference_notifications",true);
                     if (notificate){
                         isNotificationActive = true;
-                        startService();
+                        //startService();
                     }
                     else  {
                         isNotificationActive = false;
-                        stopService(intentServ);
+                        //stopService(intentServ);
                     }
                     break;
 
@@ -291,10 +291,6 @@ public class MainActivity extends AppCompatActivity {
             NotificationManager notificationManager = getSystemService(NotificationManager.class);
             notificationManager.createNotificationChannel(channel);
         }
-    }
-
-    public static boolean uwunoises() {
-        return sharedPreferences.getBoolean("preference_notification",false);
     }
 
 }
