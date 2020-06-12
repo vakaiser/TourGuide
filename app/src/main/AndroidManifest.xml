@@ -3,11 +3,9 @@
     package="at.htlgkr.tourguide">
 
     <uses-permission android:name="android.permission.INTERNET" />
-    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
-    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
-    <uses-permission
-        android:name="android.permission.WRITE_EXTERNAL_STORAGE"
-        />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
 
     <application
         android:allowBackup="true"
@@ -17,9 +15,10 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         android:usesCleartextTraffic="true">
-        <activity android:name=".DetailActivity"></activity>
+        <activity android:name=".diary.AddDiary"></activity>
+        <activity android:name=".DetailActivity" />
         <activity android:name=".CountryActivity" />
-        <activity android:name=".NotificationDetails"></activity>
+        <activity android:name=".NotificationDetails" />
         <activity android:name=".preferences.SettingsActivity" />
         <activity android:name=".diary.DiaryActivity" />
         <activity android:name=".MainActivity">
@@ -29,6 +28,7 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
         <service android:name=".MyService" />
     </application>
 
