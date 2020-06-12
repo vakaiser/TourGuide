@@ -1,10 +1,14 @@
 package at.htlgkr.tourguide;
 
+import android.Manifest;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.graphics.Color;
+import android.location.Location;
 import android.net.Uri;
 import android.os.Bundle;
 
+import androidx.core.app.ActivityCompat;
 import androidx.fragment.app.Fragment;
 
 import android.view.LayoutInflater;
@@ -15,6 +19,7 @@ import android.widget.ArrayAdapter;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -47,8 +52,6 @@ public class DetailFragment extends Fragment {
     private void intitializeView(View v) {
         listView = v.findViewById(R.id.frag_detail_list);
 
-
-
         voidoDarkuSama(MainActivity.isDarkModeActive, v);
     }
 
@@ -72,6 +75,16 @@ public class DetailFragment extends Fragment {
             Sehenswuerdigkeiten e = sehenswuerdigkeiten.get(position);
             openMaps(e.getStreet() + " " + e.getPostcode() + " " + e.getCountry());
         });*/
+
+
+        if(type.equals("sehen")) {
+            listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                @Override
+                public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                    openMaps((Place) item.getPlaces().get(position));
+                }
+            });
+        }
     }
 
     private void voidoDarkuSama(boolean isDarkMode, View v) {
@@ -96,6 +109,41 @@ public class DetailFragment extends Fragment {
 
             //((ListView) v .findViewById(R.id.frag_detail_list)).setBackgroundColor(Color.parseColor("1a1a1a"));
         }
+    }
+
+
+
+
+    /*              - - - Location - - -                */
+
+    private void openMaps(Place p) {
+        /*Request_GET task = new Request_GET(
+                "https://eu1.locationiq.com/v1/search.php?key=" + MainActivity.API_TOKEN + "&q=" + data + "&format=json");
+        task.execute();
+        try {
+            Thread.sleep(2000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        String response = task.getsJsonResponse();
+        try {
+            JSONObject jsonObject = new JSONArray(response).getJSONObject(0);
+            double lon = jsonObject.getDouble("lon");
+            double lat = jsonObject.getDouble("lat");
+            String geo = "geo:" + lat + ", " + lon + "?z=17";
+            Uri uri = Uri.parse(geo);
+            Intent intent = new Intent(Intent.ACTION_VIEW);
+            intent.setData(uri);
+            startActivity(intent);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }*/
+
+        String geo = "geo:" + p.getLat() + ", " + p.getLon() + "?z=17";
+        Uri uri = Uri.parse(geo);
+        Intent intent = new Intent(Intent.ACTION_VIEW);
+        intent.setData(uri);
+        startActivity(intent);
     }
 
 }
