@@ -148,6 +148,27 @@ public class DiaryActivity extends AppCompatActivity {
         return vDialog;
     }
 
+    private View getAddDialog2() {
+        return getAddDialog2(null, null, null);
+    }
+
+    private View getAddDialog2(String title, LocalDate localDate, String text) {
+        final View vDialog = getLayoutInflater().inflate(R.layout.dialog_add_diary, null);
+        countryField = vDialog.findViewById(R.id.countryField);
+        dateField = vDialog.findViewById(R.id.dateField);
+        descriptionField = vDialog.findViewById(R.id.descriptionField);
+        if (title != null) {
+            countryField.setText(title);
+        }
+        if (text != null) {
+            descriptionField.setText(text);
+        }
+        if (localDate != null) {
+            dateField.setText(localDate.toString());
+        }
+        return vDialog;
+    }
+
 
     public void addNewDiaryEntry(View view) {
         View vDialog = getAddDialog();
@@ -302,29 +323,16 @@ public class DiaryActivity extends AppCompatActivity {
     @SuppressLint("WrongConstant")
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        View vDialog = getAddDialog();
+        View vDialog = getAddDialog2();
+        View alert = getLayoutInflater().inflate(R.layout.dialog_delete_diary, null);
         switch (item.getItemId()) {
             case R.id.menu_saveItem:
-                addNewDiaryEntry(vDialog);
+                //addNewDiaryEntry(vDialog);
+                addGPSDiaryEntry(vDialog);
                 break;
 
             case R.id.menu_deleteJson:
-                try {
-                    diaryList.clear();
-                    //diaryAdapter.notifyDataSetChanged();
-
-                    File outFile = getExternalFilesDir(null);
-
-                    String path = outFile.getAbsolutePath();
-                    String fullPath = path + File.separator + DiaryActivity.filenameJSON;
-
-                    Files.delete(Paths.get(fullPath));
-
-                    diaryAdapter.notifyDataSetChanged();
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-
+                deleteAlert(alert);
                 break;
 
             default:
@@ -334,6 +342,70 @@ public class DiaryActivity extends AppCompatActivity {
         diaryAdapter.notifyDataSetChanged();
         return super.onOptionsItemSelected(item);
 
+    }
+
+    private void addGPSDiaryEntry(View v) {
+
+        countryField.setText("T E S T");
+        dateField.setText(DateTimeFormatter.ofPattern("dd.MM.yyyy").format(LocalDate.now()));
+        countryField.setFocusable(false);
+        dateField.setFocusable(false);
+
+        new AlertDialog.Builder(this)
+                .setTitle("Neuer Entry")
+                .setView(v)
+                .setPositiveButton("Hinzufügen", (dialog, which) -> {
+                    try {
+                        String country = countryField.getText().toString();
+                        LocalDate date = LocalDate.parse(dateField.getText().toString(), DateTimeFormatter.ofPattern("dd.MM.yyyy"));
+                        String description = descriptionField.getText().toString();
+
+                        diaryList.add(new Diary(country, date, description));
+
+                        diaryAdapter.notifyDataSetChanged();
+                        printInput(this.getCurrentFocus());
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                    //addEntry(vDialog);
+
+                    //preferenceChanged(getSharedPreferences("preference_dark_mode", Context.MODE_PRIVATE), "preference_dark_mode");
+
+
+                })
+                .setNegativeButton("Abbrechen", null)
+                .show();
+
+        diaryAdapter.notifyDataSetChanged();
+    }
+
+    private void deleteAlert(View v) {
+
+        new AlertDialog.Builder(this)
+                .setTitle("Reisetagebuch wirklich leeren?")
+                .setView(v)
+                .setPositiveButton("Leeren", (dialog, which) -> {
+                    try {
+                        diaryList.clear();
+                        //diaryAdapter.notifyDataSetChanged();
+
+                        File outFile = getExternalFilesDir(null);
+
+                        String path = outFile.getAbsolutePath();
+                        String fullPath = path + File.separator + DiaryActivity.filenameJSON;
+
+                        Files.delete(Paths.get(fullPath));
+
+                        diaryAdapter.notifyDataSetChanged();
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+
+                })
+                .setNegativeButton("Abbrechen", null)
+                .show();
+
+        diaryAdapter.notifyDataSetChanged();
     }
 
     private void voidoDarkuSama(boolean isDarkMode) {
