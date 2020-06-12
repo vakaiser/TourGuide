@@ -13,6 +13,7 @@ import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.location.Criteria;
 import android.location.Location;
+import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Bundle;
 import android.os.Environment;
@@ -467,6 +468,27 @@ public class DiaryActivity extends AppCompatActivity {
                     && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             }
             location = locationManager.getLastKnownLocation(provider);
+            locationManager.requestLocationUpdates(provider, 2000, 100, new LocationListener() {
+                @Override
+                public void onLocationChanged(Location location) {
+
+                }
+
+                @Override
+                public void onStatusChanged(String provider, int status, Bundle extras) {
+
+                }
+
+                @Override
+                public void onProviderEnabled(String provider) {
+
+                }
+
+                @Override
+                public void onProviderDisabled(String provider) {
+
+                }
+            });
             if (location != null) {
                 longitude = location.getLongitude();
                 latitude = location.getLatitude();
