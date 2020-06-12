@@ -2,14 +2,21 @@ package at.htlgkr.tourguide;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.Notification;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
 import android.graphics.Color;
+import android.location.Criteria;
+import android.location.LocationManager;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Build;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
@@ -19,6 +26,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.GridView;
 import android.widget.LinearLayout;
+import android.widget.Toast;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -49,7 +57,12 @@ public class MainActivity extends AppCompatActivity {
     public static boolean isNotificationActive;
     private Intent intentServ;
 
-    private static final String API_TOKEN = "3ed39efdfdff97";
+    public static final String API_TOKEN = "3ed39efdfdff97";
+    public static  LocationManager locationManager;
+    public static boolean gpsGo;
+    public static Criteria criteria;
+    public static String provider;
+    private boolean networkOnline;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -104,6 +117,33 @@ public class MainActivity extends AppCompatActivity {
 
         createNotificationChannel();
         startService();
+
+        locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
+        if (checkSelfPermission(Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            requestPermissions(new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 23456);
+        } else {
+            gpsGo = true;
+        }
+
+        if (gpsGo) {
+            locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
+            criteria = new Criteria();
+            criteria.setAccuracy(Criteria.ACCURACY_FINE);
+            criteria.setCostAllowed(false);
+            provider = locationManager.getBestProvider(criteria, false);
+        }
+
+        networkOnline = isNetworkAvailable();
+        if (!networkOnline) {
+            Toast.makeText(this, "Es konnte keine Netzwerkverbindung hergestellt werden.", Toast.LENGTH_LONG).show();
+            return;
+        }
+    }
+
+    private boolean isNetworkAvailable() {
+        ConnectivityManager connectivityManager = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
+        return activeNetworkInfo != null && activeNetworkInfo.isConnected();
     }
 
 
@@ -300,7 +340,4 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
-    /*              - - - Location - - -                */
-
-    
 }
