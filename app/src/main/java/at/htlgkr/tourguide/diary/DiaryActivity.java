@@ -11,6 +11,9 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
+import android.location.Criteria;
+import android.location.Location;
+import android.location.LocationManager;
 import android.os.Bundle;
 import android.os.Environment;
 import android.preference.PreferenceManager;
@@ -28,6 +31,8 @@ import android.widget.Toast;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
+
+import org.json.JSONObject;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -48,6 +53,7 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
+import androidx.core.app.ActivityCompat;
 import at.htlgkr.tourguide.MainActivity;
 import at.htlgkr.tourguide.R;
 
@@ -68,6 +74,17 @@ public class DiaryActivity extends AppCompatActivity {
     //String fullPath;
     public static String filenameJSON = "filefile.json";
 
+    private LocationManager locationManager;
+    private boolean gpsGo = false;
+    private static final String API_TOKEN = "71a976ecac8c81";
+    private double longitude;
+    private double latitude;
+    private String address;
+    private Criteria criteria;
+    private String provider;
+
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -75,6 +92,22 @@ public class DiaryActivity extends AppCompatActivity {
         if(diaryList == null) diaryList = new ArrayList<>();
         ListView listView = findViewById(R.id.diary_listview);
         registerForContextMenu(listView);
+
+        //GPS
+        locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
+        if (checkSelfPermission(Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            requestPermissions(new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 23456);
+        } else {
+            gpsGo = true;
+        }
+
+        if (gpsGo) {
+            locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
+            criteria = new Criteria();
+            criteria.setAccuracy(Criteria.ACCURACY_FINE);
+            criteria.setCostAllowed(false);
+            provider = locationManager.getBestProvider(criteria, false);
+        }
 
         voidoDarkuSama(MainActivity.isDarkModeActive);
 
@@ -422,4 +455,38 @@ public class DiaryActivity extends AppCompatActivity {
 
         }
     }
+
+    /*private void gpsStuff() {
+        if (gpsGo) {
+            Location location;
+            if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
+                    && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            }
+            location = locationManager.getLastKnownLocation(provider);
+            if (location != null) {
+                longitude = location.getLongitude();
+                latitude = location.getLatitude();
+            }
+
+            RequestGet task = new RequestGet(this,
+                    "https://eu1.locationiq.com/v1/reverse.php?key=" + API_TOKEN + "&lat=" + latitude + "&lon=" + longitude + "&format=json");
+
+            task.execute("");
+            try {
+                Thread.sleep(1000);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+            String jsonResponse = task.getJsonResponse();
+            try {
+                JSONObject jsonObject = new JSONObject(jsonResponse);
+                address = jsonObject.getString("display_name");
+
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+
+            toDoAdapter.notifyDataSetChanged();
+        }
+    }*/
 }
