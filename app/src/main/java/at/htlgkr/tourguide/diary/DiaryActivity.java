@@ -56,6 +56,7 @@ import java.util.List;
 import androidx.core.app.ActivityCompat;
 import at.htlgkr.tourguide.MainActivity;
 import at.htlgkr.tourguide.R;
+import at.htlgkr.tourguide.Request_GET;
 
 public class DiaryActivity extends AppCompatActivity {
 
@@ -77,9 +78,7 @@ public class DiaryActivity extends AppCompatActivity {
     private LocationManager locationManager;
     private boolean gpsGo = false;
     private static final String API_TOKEN = "71a976ecac8c81";
-    private double longitude;
-    private double latitude;
-    private String address;
+
     private Criteria criteria;
     private String provider;
 
@@ -379,7 +378,7 @@ public class DiaryActivity extends AppCompatActivity {
 
     private void addGPSDiaryEntry(View v) {
 
-        countryField.setText("T E S T");
+        countryField.setText(gpsStuff());
         dateField.setText(DateTimeFormatter.ofPattern("dd.MM.yyyy").format(LocalDate.now()));
         countryField.setFocusable(false);
         dateField.setFocusable(false);
@@ -456,7 +455,12 @@ public class DiaryActivity extends AppCompatActivity {
         }
     }
 
-    /*private void gpsStuff() {
+    private String gpsStuff() {
+        String result = "uwu";
+
+        double longitude = -1;
+        double latitude = -1;
+        String address = "";
         if (gpsGo) {
             Location location;
             if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
@@ -468,16 +472,15 @@ public class DiaryActivity extends AppCompatActivity {
                 latitude = location.getLatitude();
             }
 
-            RequestGet task = new RequestGet(this,
-                    "https://eu1.locationiq.com/v1/reverse.php?key=" + API_TOKEN + "&lat=" + latitude + "&lon=" + longitude + "&format=json");
+            Request_GET task = new Request_GET("https://eu1.locationiq.com/v1/reverse.php?key=" + API_TOKEN + "&lat=" + latitude + "&lon=" + longitude + "&format=json");
 
             task.execute("");
             try {
-                Thread.sleep(1000);
+                Thread.sleep(2000);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
-            String jsonResponse = task.getJsonResponse();
+            String jsonResponse = task.getsJsonResponse();
             try {
                 JSONObject jsonObject = new JSONObject(jsonResponse);
                 address = jsonObject.getString("display_name");
@@ -485,8 +488,12 @@ public class DiaryActivity extends AppCompatActivity {
             } catch (Exception e) {
                 e.printStackTrace();
             }
+            String[] owo = address.split(", ");
 
-            toDoAdapter.notifyDataSetChanged();
+            result = owo[owo.length-1];
+
+
         }
-    }*/
+        return result;
+    }
 }
