@@ -49,6 +49,8 @@ public class MainActivity extends AppCompatActivity {
     public static boolean isNotificationActive;
     private Intent intentServ;
 
+    private static final String API_TOKEN = "3ed39efdfdff97";
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -137,7 +139,11 @@ public class MainActivity extends AppCompatActivity {
             capitol = data[2];
             description = data[3];
             Arrays.stream(sight)
-                    .forEach(x-> places.add(new Place(x, "null", -1, -1)));
+                    .forEach(x-> {
+                        //places.add(new Place(x, "null", -1, -1))
+                        String[] tmp = x.split("~");
+                        places.add(new Place(tmp[0], "null", Double.parseDouble(tmp[1]), Double.parseDouble(tmp[2])));
+                    });
             Arrays.stream(food)
                     .forEach(x-> foods.add(new Sehenswuerdigkeiten(x, null)));
 
@@ -293,4 +299,8 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+
+    /*              - - - Location - - -                */
+
+    
 }
