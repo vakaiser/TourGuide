@@ -133,34 +133,34 @@ public class MyService extends IntentService {
 
         switch (random) {
             case 0:
-                result = "Wie wärs mal mit einem neuen Sommerurlaubsziel?";
+                result = getString(R.string.notfic1);
                 break;
 
             case 1:
-                result = "Schon mal an Urlaub gedacht?";
+                result = getString(R.string.notfic2);
                 break;
 
             case 2:
-                result = "Reisetagebuch is ready to be updated!";
+                result = getString(R.string.notfic3);
                 break;
 
             case 3:
                 uwu = MainActivity.countries.get(randomio).getFoods().get(randididi).toString();
-                result = "Check doch verschiedenstes Essen von unterschiedlichen Ländern aus! Wie wärs mit "+uwu+"?";
+                result = getString(R.string.notfic4) + " " + uwu+"?";
                 break;
 
             case 4:
                 uwu = MainActivity.countries.get(randomio).getPlaces().get(randididi).toString();
-                result = "Hast du mal "+uwu+" besucht?";
+                result = getString(R.string.notfic5) + " " +uwu+" besucht?";
 
             case 5:
                 uwu = MainActivity.countries.get(randomio).getName().toString();
                 String owo = df1.format(MainActivity.countries.get(randomio).getPopulation());
-                result = "Wusstest du schon, "+uwu+" hat "+owo+" Einwohner?";
+                result = getString(R.string.notfic6) + " " + uwu+" hat "+owo+" Einwohner?";
                 break;
 
             default:
-                result = "uwu owo qwq let the uwugang rise up!";
+                result = getString(R.string.defaultuwu);
                 break;
 
         }
