@@ -2,14 +2,21 @@ package at.htlgkr.tourguide;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.Notification;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
 import android.graphics.Color;
+import android.location.Criteria;
+import android.location.LocationManager;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Build;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
@@ -19,6 +26,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.GridView;
 import android.widget.LinearLayout;
+import android.widget.Toast;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -48,6 +56,13 @@ public class MainActivity extends AppCompatActivity {
     private static final String CHANNEL_ID = "42069";
     public static boolean isNotificationActive;
     private Intent intentServ;
+
+    public static final String API_TOKEN = "3ed39efdfdff97";
+    public static  LocationManager locationManager;
+    public static boolean gpsGo;
+    public static Criteria criteria;
+    public static String provider;
+    private boolean networkOnline;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -102,6 +117,33 @@ public class MainActivity extends AppCompatActivity {
 
         createNotificationChannel();
         startService();
+
+        locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
+        if (checkSelfPermission(Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            requestPermissions(new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 23456);
+        } else {
+            gpsGo = true;
+        }
+
+        if (gpsGo) {
+            locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
+            criteria = new Criteria();
+            criteria.setAccuracy(Criteria.ACCURACY_FINE);
+            criteria.setCostAllowed(false);
+            provider = locationManager.getBestProvider(criteria, false);
+        }
+
+        networkOnline = isNetworkAvailable();
+        if (!networkOnline) {
+            Toast.makeText(this, "Es konnte keine Netzwerkverbindung hergestellt werden.", Toast.LENGTH_LONG).show();
+            return;
+        }
+    }
+
+    private boolean isNetworkAvailable() {
+        ConnectivityManager connectivityManager = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
+        return activeNetworkInfo != null && activeNetworkInfo.isConnected();
     }
 
 
@@ -137,7 +179,11 @@ public class MainActivity extends AppCompatActivity {
             capitol = data[2];
             description = data[3];
             Arrays.stream(sight)
-                    .forEach(x-> places.add(new Place(x, "null", -1, -1)));
+                    .forEach(x-> {
+                        //places.add(new Place(x, "null", -1, -1))
+                        String[] tmp = x.split("~");
+                        places.add(new Place(tmp[0], "null", Double.parseDouble(tmp[1]), Double.parseDouble(tmp[2])));
+                    });
             Arrays.stream(food)
                     .forEach(x-> foods.add(new Sehenswuerdigkeiten(x, null)));
 
@@ -292,5 +338,6 @@ public class MainActivity extends AppCompatActivity {
             notificationManager.createNotificationChannel(channel);
         }
     }
+
 
 }
