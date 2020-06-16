@@ -8,16 +8,30 @@
     android:orientation="vertical"
     tools:context=".diary.AddDiary">
 
+    <TextView
+        android:id="@+id/textView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_vertical"
+        android:paddingLeft="20px"
+        android:paddingTop="20px"
+        android:paddingBottom="30px"
+        android:text="Neuen Eintrag erstellen"
+        android:textColor="#000000"
+        android:textSize="24sp" />
+
     <EditText
         android:id="@+id/countryField2"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="match_parent"
+        android:layout_weight="100"
         android:hint="Country" />
 
     <EditText
         android:id="@+id/dateField2"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="match_parent"
+        android:layout_weight="100"
         android:focusable="false"
         android:hint="Date"
         android:inputType="date" />
@@ -25,9 +39,36 @@
     <EditText
         android:id="@+id/descriptionField2"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="match_parent"
+        android:layout_weight="75"
         android:ems="10"
         android:hint="Description"
         android:inputType="textMultiLine" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_weight="88"
+        android:orientation="horizontal"
+        android:paddingLeft="20px"
+        android:paddingTop="300px"
+        android:paddingRight="20px">
+
+        <Button
+            android:id="@+id/btn_hinzufuegen"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:onClick="addEntry"
+            android:layout_weight="1"
+            android:text="Hinzufügen" />
+
+        <Button
+            android:id="@+id/btn_abbrechen"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:onClick="notAddEntry"
+            android:layout_weight="1"
+            android:text="Abbrechen" />
+    </LinearLayout>
 
 </LinearLayout>

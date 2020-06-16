@@ -58,12 +58,12 @@ import androidx.core.app.ActivityCompat;
 import at.htlgkr.tourguide.MainActivity;
 import at.htlgkr.tourguide.R;
 import at.htlgkr.tourguide.Request_GET;
+import at.htlgkr.tourguide.preferences.SettingsActivity;
 
 public class DiaryActivity extends AppCompatActivity {
 
-    private EditText countryField, dateField, descriptionField;
-    private List<Diary> diaryList;
-    private DiaryAdapter diaryAdapter;
+    static List<Diary> diaryList;
+    static DiaryAdapter diaryAdapter;
 
     private SharedPreferences sharedPreferences;
     private SharedPreferences.OnSharedPreferenceChangeListener preferencesChangeListener;
@@ -82,6 +82,12 @@ public class DiaryActivity extends AppCompatActivity {
 
     private Criteria criteria;
     private String provider;
+
+    static boolean edit = false;
+    static boolean gps = false;
+    static Diary currentNote = null;
+    static String result = "";
+
 
 
 
@@ -139,74 +145,17 @@ public class DiaryActivity extends AppCompatActivity {
     }
 
 
-    private View getAddDialog() {
-        return getAddDialog(null, null, null);
-    }
 
-    private View getAddDialog(String title, LocalDate localDate, String text) {
-        final View vDialog = getLayoutInflater().inflate(R.layout.dialog_add_diary, null);
-        countryField = vDialog.findViewById(R.id.countryField);
-        dateField = vDialog.findViewById(R.id.dateField);
-        descriptionField = vDialog.findViewById(R.id.descriptionField);
-        if (title != null) {
-            countryField.setText(title);
-        }
-        if (text != null) {
-            descriptionField.setText(text);
-        }
-        if (localDate != null) {
-            dateField.setText(localDate.toString());
-        }
-        dateField.setOnClickListener(v -> {
-            Calendar currentDate = Calendar.getInstance();
-            if (!dateField.getText().toString().isEmpty()) {
-                try {
-                    Date date = Date.from(localDate.atStartOfDay(ZoneId.systemDefault()).toInstant());
-                    currentDate.setTime(date);
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-            }
-            DatePickerDialog mDatePicker = new DatePickerDialog(DiaryActivity.
-                    this, (datePicker, year, month, dayOfMonth) -> {
-                Calendar calInput = Calendar.getInstance();
-                calInput.set(year, month, dayOfMonth);
-
-                LocalDate ld = calInput.getTime().toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
-                dateField.setText(ld.format(DateTimeFormatter.ofPattern("dd.MM.yyyy")));
-            }, currentDate.get(Calendar.YEAR), currentDate.get(Calendar.MONTH), currentDate.get(Calendar.DAY_OF_MONTH));
-            mDatePicker.setTitle("Select date");
-            mDatePicker.show();
-        });
-        return vDialog;
-    }
-
-    private View getAddDialog2() {
-        return getAddDialog2(null, null, null);
-    }
-
-    private View getAddDialog2(String title, LocalDate localDate, String text) {
-        final View vDialog = getLayoutInflater().inflate(R.layout.dialog_add_diary, null);
-        countryField = vDialog.findViewById(R.id.countryField);
-        dateField = vDialog.findViewById(R.id.dateField);
-        descriptionField = vDialog.findViewById(R.id.descriptionField);
-        if (title != null) {
-            countryField.setText(title);
-        }
-        if (text != null) {
-            descriptionField.setText(text);
-        }
-        if (localDate != null) {
-            dateField.setText(localDate.toString());
-        }
-        return vDialog;
-    }
 
 
     public void addNewDiaryEntry(View view) {
-        View vDialog = getAddDialog();
+        gps = false;
+        edit = false;
+        Intent in = new Intent(this, AddDiary.class);
+        startActivity(in);
+        //View vDialog = getAddDialog();
 
-        new AlertDialog.Builder(this)
+        /*new AlertDialog.Builder(this)
                 .setTitle("Neuer Entry")
                 .setView(vDialog)
                 .setPositiveButton("Hinzufügen", (dialog, which) -> {
@@ -231,14 +180,13 @@ public class DiaryActivity extends AppCompatActivity {
                 .setNegativeButton("Abbrechen", null)
                 .show();
 
-        diaryAdapter.notifyDataSetChanged();
+        diaryAdapter.notifyDataSetChanged();*/
     }
 
     @Override
     public boolean onContextItemSelected(MenuItem item) {
         //write it here pls => contextMenuInfo gibt dir das aktuelle Item(bzw. die Info über das Item) aus. Damit können wir zum Beispiel ermitteln welche Node wir bei delete entfernen müssen. B)
         AdapterView.AdapterContextMenuInfo contextMenuInfo = (AdapterView.AdapterContextMenuInfo ) item.getMenuInfo();
-        Diary currentNote;
 
         switch (item.getItemId()) {
             case R.id.menu_deleteItem:
@@ -248,7 +196,12 @@ public class DiaryActivity extends AppCompatActivity {
                 break;
 
             case R.id.menu_editItem:
+                gps = false;
+                edit = true;
                 currentNote = diaryList.get(contextMenuInfo.position);
+                Intent in = new Intent(this, AddDiary.class);
+                startActivity(in);
+                /*currentNote = diaryList.get(contextMenuInfo.position);
                 View vDialog = getAddDialog(currentNote.getCountry(), currentNote.getDate(), currentNote.getDescription());
                 new AlertDialog.Builder(this)
                         .setTitle("Eintrag bearbeiten")
@@ -266,9 +219,9 @@ public class DiaryActivity extends AppCompatActivity {
                         .show();
                 diaryList.set(contextMenuInfo.position, currentNote);
 
-                //editLolPost(toDoList.get(contextMenuInfo.position).getId(), vDialog, toDoList.get(contextMenuInfo.position));
+                //cLolPost(toDoList.get(contextMenuInfo.position).getId(), vDialog, toDoList.get(contextMenuInfo.position));
 
-                diaryAdapter.notifyDataSetChanged();
+                diaryAdapter.notifyDataSetChanged();*/
 
                 break;
             case R.id.menu_detailsItem:
@@ -356,12 +309,17 @@ public class DiaryActivity extends AppCompatActivity {
     @SuppressLint("WrongConstant")
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        View vDialog = getAddDialog2();
+        //View vDialog = getAddDialog2();
         View alert = getLayoutInflater().inflate(R.layout.dialog_delete_diary, null);
         switch (item.getItemId()) {
             case R.id.menu_saveItem:
+                gps = true;
+                edit = false;
+                gpsStuff();
+                Intent in = new Intent(this, AddDiary.class);
+                startActivity(in);
                 //addNewDiaryEntry(vDialog);
-                addGPSDiaryEntry(vDialog);
+                //addGPSDiaryEntry(vDialog);
                 break;
 
             case R.id.menu_deleteJson:
@@ -377,7 +335,10 @@ public class DiaryActivity extends AppCompatActivity {
 
     }
 
-    private void addGPSDiaryEntry(View v) {
+    /*private void addGPSDiaryEntry(View v) {
+
+        Intent in = new Intent(this, AddDiary.class);
+        startActivity(in);
 
         countryField.setText(gpsStuff());
         dateField.setText(DateTimeFormatter.ofPattern("dd.MM.yyyy").format(LocalDate.now()));
@@ -410,7 +371,8 @@ public class DiaryActivity extends AppCompatActivity {
                 .show();
 
         diaryAdapter.notifyDataSetChanged();
-    }
+    }*/
+
 
     private void deleteAlert(View v) {
 
@@ -456,9 +418,7 @@ public class DiaryActivity extends AppCompatActivity {
         }
     }
 
-    private String gpsStuff() {
-        String result = "uwu";
-
+    private void gpsStuff() {
         double longitude = -1;
         double latitude = -1;
         String address = "";
@@ -512,10 +472,9 @@ public class DiaryActivity extends AppCompatActivity {
             }
             String[] owo = address.split(", ");
 
-            result = owo[owo.length-1];
+            result = owo[owo.length - 1];
 
 
         }
-        return result;
     }
 }
