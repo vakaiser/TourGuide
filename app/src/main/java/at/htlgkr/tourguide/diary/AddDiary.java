@@ -8,6 +8,7 @@ import android.Manifest;
 import android.app.DatePickerDialog;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.Color;
 import android.location.Criteria;
 import android.location.Location;
 import android.location.LocationListener;
@@ -18,6 +19,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -36,6 +38,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.Calendar;
 import java.util.Date;
 
+import at.htlgkr.tourguide.Country;
 import at.htlgkr.tourguide.MainActivity;
 import at.htlgkr.tourguide.R;
 import at.htlgkr.tourguide.Request_GET;
@@ -99,8 +102,9 @@ public class AddDiary extends AppCompatActivity {
         }
         else vDialog = getAddDialog();
 
+
+        TextView uwutown = findViewById(R.id.textViewLOL);
         if (DiaryActivity.edit) {
-            TextView uwutown = findViewById(R.id.textViewLOL);
             Button uwubutton = findViewById(R.id.btn_hinzufuegen);
             uwutown.setText("Eintrag editieren");
             uwubutton.setText("Editieren");
@@ -110,6 +114,23 @@ public class AddDiary extends AppCompatActivity {
             descriptionField2.setText(DiaryActivity.currentNote.getDescription());
         }
 
+        if (MainActivity.isDarkModeActive) {
+            voidoDarkuSama(true);
+            countryField2.setTextColor(Color.parseColor("#E4E4E4"));
+            countryField2.setHintTextColor(Color.parseColor("#404040"));
+            dateField2.setTextColor(Color.parseColor("#E4E4E4"));
+            dateField2.setHintTextColor(Color.parseColor("#404040"));
+            descriptionField2.setTextColor(Color.parseColor("#E4E4E4"));
+            descriptionField2.setHintTextColor(Color.parseColor("#404040"));
+            uwutown.setTextColor(Color.parseColor("#E4E4E4"));
+        }
+        else {
+            voidoDarkuSama(false);
+            countryField2.setTextColor(Color.parseColor("#1a1a1a"));
+            dateField2.setTextColor(Color.parseColor("#1a1a1a"));
+            descriptionField2.setTextColor(Color.parseColor("#1a1a1a"));
+            uwutown.setTextColor(Color.parseColor("#1a1a1a"));
+        }
 
 
 
@@ -335,6 +356,22 @@ public class AddDiary extends AppCompatActivity {
             result = owo[owo.length - 1];
             //result = "uwu";
 
+
+        }
+    }
+
+
+    private void voidoDarkuSama(boolean isDarkMode) {
+
+        //LinearLayout backgroundC = findViewById(R.id.backgroundCountry);
+        LinearLayout backgroundD = findViewById(R.id.backroundDiary2);
+        if(isDarkMode){
+            //backgroundC.setBackgroundColor(Color.parseColor("#1a1a1a"));
+            backgroundD.setBackgroundColor(Color.parseColor("#1a1a1a"));
+        }
+        else{
+            //backgroundC.setBackgroundColor(Color.parseColor("#E4E4E4"));
+            backgroundD.setBackgroundColor(Color.WHITE);
 
         }
     }
