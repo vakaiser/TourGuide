@@ -58,12 +58,12 @@ import androidx.core.app.ActivityCompat;
 import at.htlgkr.tourguide.MainActivity;
 import at.htlgkr.tourguide.R;
 import at.htlgkr.tourguide.Request_GET;
+import at.htlgkr.tourguide.preferences.SettingsActivity;
 
 public class DiaryActivity extends AppCompatActivity {
 
-    private EditText countryField, dateField, descriptionField;
-    private List<Diary> diaryList;
-    private DiaryAdapter diaryAdapter;
+    static List<Diary> diaryList;
+    static DiaryAdapter diaryAdapter;
 
     private SharedPreferences sharedPreferences;
     private SharedPreferences.OnSharedPreferenceChangeListener preferencesChangeListener;
@@ -76,12 +76,11 @@ public class DiaryActivity extends AppCompatActivity {
     //String fullPath;
     public static String filenameJSON = "filefile.json";
 
-    private LocationManager locationManager;
-    private boolean gpsGo = false;
-    private static final String API_TOKEN = "71a976ecac8c81";
 
-    private Criteria criteria;
-    private String provider;
+    static boolean edit = false;
+    static boolean gps = false;
+    static Diary currentNote = null;
+
 
 
 
@@ -92,22 +91,6 @@ public class DiaryActivity extends AppCompatActivity {
         if(diaryList == null) diaryList = new ArrayList<>();
         ListView listView = findViewById(R.id.diary_listview);
         registerForContextMenu(listView);
-
-        //GPS
-        locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
-        if (checkSelfPermission(Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            requestPermissions(new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 23456);
-        } else {
-            gpsGo = true;
-        }
-
-        if (gpsGo) {
-            locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
-            criteria = new Criteria();
-            criteria.setAccuracy(Criteria.ACCURACY_FINE);
-            criteria.setCostAllowed(false);
-            provider = locationManager.getBestProvider(criteria, false);
-        }
 
         voidoDarkuSama(MainActivity.isDarkModeActive);
 
@@ -139,74 +122,17 @@ public class DiaryActivity extends AppCompatActivity {
     }
 
 
-    private View getAddDialog() {
-        return getAddDialog(null, null, null);
-    }
 
-    private View getAddDialog(String title, LocalDate localDate, String text) {
-        final View vDialog = getLayoutInflater().inflate(R.layout.dialog_add_diary, null);
-        countryField = vDialog.findViewById(R.id.countryField);
-        dateField = vDialog.findViewById(R.id.dateField);
-        descriptionField = vDialog.findViewById(R.id.descriptionField);
-        if (title != null) {
-            countryField.setText(title);
-        }
-        if (text != null) {
-            descriptionField.setText(text);
-        }
-        if (localDate != null) {
-            dateField.setText(localDate.toString());
-        }
-        dateField.setOnClickListener(v -> {
-            Calendar currentDate = Calendar.getInstance();
-            if (!dateField.getText().toString().isEmpty()) {
-                try {
-                    Date date = Date.from(localDate.atStartOfDay(ZoneId.systemDefault()).toInstant());
-                    currentDate.setTime(date);
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-            }
-            DatePickerDialog mDatePicker = new DatePickerDialog(DiaryActivity.
-                    this, (datePicker, year, month, dayOfMonth) -> {
-                Calendar calInput = Calendar.getInstance();
-                calInput.set(year, month, dayOfMonth);
-
-                LocalDate ld = calInput.getTime().toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
-                dateField.setText(ld.format(DateTimeFormatter.ofPattern("dd.MM.yyyy")));
-            }, currentDate.get(Calendar.YEAR), currentDate.get(Calendar.MONTH), currentDate.get(Calendar.DAY_OF_MONTH));
-            mDatePicker.setTitle("Select date");
-            mDatePicker.show();
-        });
-        return vDialog;
-    }
-
-    private View getAddDialog2() {
-        return getAddDialog2(null, null, null);
-    }
-
-    private View getAddDialog2(String title, LocalDate localDate, String text) {
-        final View vDialog = getLayoutInflater().inflate(R.layout.dialog_add_diary, null);
-        countryField = vDialog.findViewById(R.id.countryField);
-        dateField = vDialog.findViewById(R.id.dateField);
-        descriptionField = vDialog.findViewById(R.id.descriptionField);
-        if (title != null) {
-            countryField.setText(title);
-        }
-        if (text != null) {
-            descriptionField.setText(text);
-        }
-        if (localDate != null) {
-            dateField.setText(localDate.toString());
-        }
-        return vDialog;
-    }
 
 
     public void addNewDiaryEntry(View view) {
-        View vDialog = getAddDialog();
+        gps = false;
+        edit = false;
+        Intent in = new Intent(this, AddDiary.class);
+        startActivity(in);
+        //View vDialog = getAddDialog();
 
-        new AlertDialog.Builder(this)
+        /*new AlertDialog.Builder(this)
                 .setTitle("Neuer Entry")
                 .setView(vDialog)
                 .setPositiveButton("Hinzufügen", (dialog, which) -> {
@@ -231,14 +157,13 @@ public class DiaryActivity extends AppCompatActivity {
                 .setNegativeButton("Abbrechen", null)
                 .show();
 
-        diaryAdapter.notifyDataSetChanged();
+        diaryAdapter.notifyDataSetChanged();*/
     }
 
     @Override
     public boolean onContextItemSelected(MenuItem item) {
         //write it here pls => contextMenuInfo gibt dir das aktuelle Item(bzw. die Info über das Item) aus. Damit können wir zum Beispiel ermitteln welche Node wir bei delete entfernen müssen. B)
         AdapterView.AdapterContextMenuInfo contextMenuInfo = (AdapterView.AdapterContextMenuInfo ) item.getMenuInfo();
-        Diary currentNote;
 
         switch (item.getItemId()) {
             case R.id.menu_deleteItem:
@@ -248,7 +173,12 @@ public class DiaryActivity extends AppCompatActivity {
                 break;
 
             case R.id.menu_editItem:
+                gps = false;
+                edit = true;
                 currentNote = diaryList.get(contextMenuInfo.position);
+                Intent in = new Intent(this, AddDiary.class);
+                startActivity(in);
+                /*currentNote = diaryList.get(contextMenuInfo.position);
                 View vDialog = getAddDialog(currentNote.getCountry(), currentNote.getDate(), currentNote.getDescription());
                 new AlertDialog.Builder(this)
                         .setTitle("Eintrag bearbeiten")
@@ -266,9 +196,9 @@ public class DiaryActivity extends AppCompatActivity {
                         .show();
                 diaryList.set(contextMenuInfo.position, currentNote);
 
-                //editLolPost(toDoList.get(contextMenuInfo.position).getId(), vDialog, toDoList.get(contextMenuInfo.position));
+                //cLolPost(toDoList.get(contextMenuInfo.position).getId(), vDialog, toDoList.get(contextMenuInfo.position));
 
-                diaryAdapter.notifyDataSetChanged();
+                diaryAdapter.notifyDataSetChanged();*/
 
                 break;
             case R.id.menu_detailsItem:
@@ -356,12 +286,16 @@ public class DiaryActivity extends AppCompatActivity {
     @SuppressLint("WrongConstant")
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        View vDialog = getAddDialog2();
+        //View vDialog = getAddDialog2();
         View alert = getLayoutInflater().inflate(R.layout.dialog_delete_diary, null);
         switch (item.getItemId()) {
             case R.id.menu_saveItem:
+                gps = true;
+                edit = false;
+                Intent in = new Intent(this, AddDiary.class);
+                startActivity(in);
                 //addNewDiaryEntry(vDialog);
-                addGPSDiaryEntry(vDialog);
+                //addGPSDiaryEntry(vDialog);
                 break;
 
             case R.id.menu_deleteJson:
@@ -377,7 +311,10 @@ public class DiaryActivity extends AppCompatActivity {
 
     }
 
-    private void addGPSDiaryEntry(View v) {
+    /*private void addGPSDiaryEntry(View v) {
+
+        Intent in = new Intent(this, AddDiary.class);
+        startActivity(in);
 
         countryField.setText(gpsStuff());
         dateField.setText(DateTimeFormatter.ofPattern("dd.MM.yyyy").format(LocalDate.now()));
@@ -410,7 +347,8 @@ public class DiaryActivity extends AppCompatActivity {
                 .show();
 
         diaryAdapter.notifyDataSetChanged();
-    }
+    }*/
+
 
     private void deleteAlert(View v) {
 
@@ -456,66 +394,5 @@ public class DiaryActivity extends AppCompatActivity {
         }
     }
 
-    private String gpsStuff() {
-        String result = "uwu";
 
-        double longitude = -1;
-        double latitude = -1;
-        String address = "";
-        if (gpsGo) {
-            Location location;
-            if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
-                    && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            }
-            location = locationManager.getLastKnownLocation(provider);
-            locationManager.requestLocationUpdates(provider, 2000, 100, new LocationListener() {
-                @Override
-                public void onLocationChanged(Location location) {
-
-                }
-
-                @Override
-                public void onStatusChanged(String provider, int status, Bundle extras) {
-
-                }
-
-                @Override
-                public void onProviderEnabled(String provider) {
-
-                }
-
-                @Override
-                public void onProviderDisabled(String provider) {
-
-                }
-            });
-            if (location != null) {
-                longitude = location.getLongitude();
-                latitude = location.getLatitude();
-            }
-
-            Request_GET task = new Request_GET("https://eu1.locationiq.com/v1/reverse.php?key=" + API_TOKEN + "&lat=" + latitude + "&lon=" + longitude + "&format=json");
-
-            task.execute("");
-            try {
-                Thread.sleep(2000);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-            String jsonResponse = task.getsJsonResponse();
-            try {
-                JSONObject jsonObject = new JSONObject(jsonResponse);
-                address = jsonObject.getString("display_name");
-
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-            String[] owo = address.split(", ");
-
-            result = owo[owo.length-1];
-
-
-        }
-        return result;
-    }
 }
