@@ -88,7 +88,7 @@ public class CountryAdapter extends BaseAdapter {
     }
 
     public static String countryPicture(Country c) {
-        String url = "";
+        String url = "https://www.optikunde.de/farbe/image/weiss-white.png";
         switch(c.getName().toUpperCase()){
             case "FRANKREICH":
                 url = "http://www.nationalflaggen.de/media/flags/flagge-frankreich.gif";
@@ -110,7 +110,7 @@ public class CountryAdapter extends BaseAdapter {
                 url = "http://3.bp.blogspot.com/-w3UXa9dRM2Y/UDTJPXp_LdI/AAAAAAAAACY/v9k2fv5fmsY/s1600/flagge-kanada.jpg";
                 break;
 
-            case "CHINA":
+            case "VOLKSREPUBLIK CHINA":
                 url = "http://flags.fmcdn.net/data/flags/w580/cn.png";
                 break;
 
@@ -144,6 +144,22 @@ public class CountryAdapter extends BaseAdapter {
 
             case "BULGARIEN":
                 url = "https://upload.wikimedia.org/wikipedia/commons/thumb/9/9a/Flag_of_Bulgaria.svg/1000px-Flag_of_Bulgaria.svg.png";
+                break;
+
+            case "UNGARN":
+                url = "https://upload.wikimedia.org/wikipedia/commons/thumb/c/c1/Flag_of_Hungary.svg/1920px-Flag_of_Hungary.svg.png";
+                break;
+
+            case "POLEN":
+                url = "https://upload.wikimedia.org/wikipedia/commons/thumb/1/12/Flag_of_Poland.svg/1920px-Flag_of_Poland.svg.png";
+                break;
+
+            case "KOENIGREICH NIEDERLANDE":
+                url = "https://upload.wikimedia.org/wikipedia/commons/thumb/2/20/Flag_of_the_Netherlands.svg/800px-Flag_of_the_Netherlands.svg.png";
+                break;
+
+            case "OESTERREICH":
+                url = "https://upload.wikimedia.org/wikipedia/commons/thumb/4/41/Flag_of_Austria.svg/800px-Flag_of_Austria.svg.png";
                 break;
 
             default:
