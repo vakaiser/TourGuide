@@ -2,20 +2,29 @@ package at.htlgkr.tourguide.diary;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
 
 import android.Manifest;
 import android.app.DatePickerDialog;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.location.Criteria;
+import android.location.Location;
+import android.location.LocationListener;
+import android.location.LocationManager;
 import android.os.Bundle;
 import android.os.Environment;
 import android.util.Log;
 import android.view.View;
+import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+
+import org.json.JSONObject;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -29,12 +38,12 @@ import java.util.Date;
 
 import at.htlgkr.tourguide.MainActivity;
 import at.htlgkr.tourguide.R;
-import at.htlgkr.tourguide.preferences.SettingsActivity;
+import at.htlgkr.tourguide.Request_GET;
 
 public class AddDiary extends AppCompatActivity {
 
 
-    private EditText countryField, dateField, descriptionField;
+    private EditText countryField2, dateField2, descriptionField2;
 
     private static final String TAG = MainActivity.class.getSimpleName();
     private static final int RQ_WRITE_STORAGE = 12345;
@@ -44,17 +53,66 @@ public class AddDiary extends AppCompatActivity {
     //String fullPath;
     public static String filenameJSON = "filefile.json";
 
+    private String result = "uwugang";
+
+    private LocationManager locationManager;
+    private boolean gpsGo = false;
+    private static final String API_TOKEN = "71a976ecac8c81";
+
+    private Criteria criteria;
+    private String provider;
+
+    private View vDialog;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_diary);
 
-        if (DiaryActivity.gps) {
-            countryField.setText(DiaryActivity.result);
-            dateField.setText(DateTimeFormatter.ofPattern("dd.MM.yyyy").format(LocalDate.now()));
-            countryField.setFocusable(false);
-            dateField.setFocusable(false);
+
+
+
+        //GPS
+        locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
+        if (checkSelfPermission(Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            requestPermissions(new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 23456);
+        } else {
+            gpsGo = true;
         }
+
+        if (gpsGo) {
+            locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
+            criteria = new Criteria();
+            criteria.setAccuracy(Criteria.ACCURACY_FINE);
+            criteria.setCostAllowed(false);
+            provider = locationManager.getBestProvider(criteria, false);
+        }
+
+
+        if (DiaryActivity.gps) {
+            vDialog = getAddDialog2();
+            gpsStuff();
+            countryField2.setText(result);
+            dateField2.setText(DateTimeFormatter.ofPattern("dd.MM.yyyy").format(LocalDate.now()));
+            countryField2.setFocusable(false);
+            dateField2.setFocusable(false);
+        }
+        else vDialog = getAddDialog();
+
+        if (DiaryActivity.edit) {
+            TextView uwutown = findViewById(R.id.textViewLOL);
+            Button uwubutton = findViewById(R.id.btn_hinzufuegen);
+            uwutown.setText("Eintrag editieren");
+            uwubutton.setText("Editieren");
+
+            countryField2.setText(DiaryActivity.currentNote.getCountry());
+            dateField2.setText(DateTimeFormatter.ofPattern("dd.MM.yyyy").format(DiaryActivity.currentNote.getDate()));
+            descriptionField2.setText(DiaryActivity.currentNote.getDescription());
+        }
+
+
+
+
     }
 
     private View getAddDialog() {
@@ -62,40 +120,44 @@ public class AddDiary extends AppCompatActivity {
     }
 
     private View getAddDialog(String title, LocalDate localDate, String text) {
-        final View vDialog = getLayoutInflater().inflate(R.layout.dialog_add_diary, null);
-        countryField = vDialog.findViewById(R.id.countryField);
-        dateField = vDialog.findViewById(R.id.dateField);
-        descriptionField = vDialog.findViewById(R.id.descriptionField);
+        //final View vDialog = getLayoutInflater().inflate(R.layout.activity_add_diary, null);
+        countryField2 = findViewById(R.id.countryField2);
+        dateField2 = findViewById(R.id.dateField2);
+        descriptionField2 = findViewById(R.id.descriptionField2);
         if (title != null) {
-            countryField.setText(title);
+            countryField2.setText(title);
         }
         if (text != null) {
-            descriptionField.setText(text);
+            descriptionField2.setText(text);
         }
         if (localDate != null) {
-            dateField.setText(localDate.toString());
+            dateField2.setText(localDate.toString());
         }
-        dateField.setOnClickListener(v -> {
-            Calendar currentDate = Calendar.getInstance();
-            if (!dateField.getText().toString().isEmpty()) {
-                try {
-                    Date date = Date.from(localDate.atStartOfDay(ZoneId.systemDefault()).toInstant());
-                    currentDate.setTime(date);
-                } catch (Exception e) {
-                    e.printStackTrace();
+        try {
+            dateField2.setOnClickListener(v -> {
+                Calendar currentDate = Calendar.getInstance();
+                if (!dateField2.getText().toString().isEmpty()) {
+                    try {
+                        Date date = Date.from(localDate.atStartOfDay(ZoneId.systemDefault()).toInstant());
+                        currentDate.setTime(date);
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
                 }
-            }
-            DatePickerDialog mDatePicker = new DatePickerDialog(AddDiary.
-                    this, (datePicker, year, month, dayOfMonth) -> {
-                Calendar calInput = Calendar.getInstance();
-                calInput.set(year, month, dayOfMonth);
+                DatePickerDialog mDatePicker = new DatePickerDialog(AddDiary.
+                        this, (datePicker, year, month, dayOfMonth) -> {
+                    Calendar calInput = Calendar.getInstance();
+                    calInput.set(year, month, dayOfMonth);
 
-                LocalDate ld = calInput.getTime().toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
-                dateField.setText(ld.format(DateTimeFormatter.ofPattern("dd.MM.yyyy")));
-            }, currentDate.get(Calendar.YEAR), currentDate.get(Calendar.MONTH), currentDate.get(Calendar.DAY_OF_MONTH));
-            mDatePicker.setTitle("Select date");
-            mDatePicker.show();
-        });
+                    LocalDate ld = calInput.getTime().toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+                    dateField2.setText(ld.format(DateTimeFormatter.ofPattern("dd.MM.yyyy")));
+                }, currentDate.get(Calendar.YEAR), currentDate.get(Calendar.MONTH), currentDate.get(Calendar.DAY_OF_MONTH));
+                mDatePicker.setTitle("Select date");
+                mDatePicker.show();
+            });
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
         return vDialog;
     }
 
@@ -104,46 +166,42 @@ public class AddDiary extends AppCompatActivity {
     }
 
     private View getAddDialog2(String title, LocalDate localDate, String text) {
-        final View vDialog = getLayoutInflater().inflate(R.layout.dialog_add_diary, null);
-        countryField = vDialog.findViewById(R.id.countryField);
-        dateField = vDialog.findViewById(R.id.dateField);
-        descriptionField = vDialog.findViewById(R.id.descriptionField);
+        final View vDialog = getLayoutInflater().inflate(R.layout.activity_add_diary, null);
+        countryField2 = findViewById(R.id.countryField2);
+        dateField2 = findViewById(R.id.dateField2);
+        descriptionField2 = findViewById(R.id.descriptionField2);
         if (title != null) {
-            countryField.setText(title);
+            countryField2.setText(title);
         }
         if (text != null) {
-            descriptionField.setText(text);
+            descriptionField2.setText(text);
         }
         if (localDate != null) {
-            dateField.setText(localDate.toString());
+            dateField2.setText(localDate.toString());
         }
         return vDialog;
     }
 
 
     public void addEntry(View view) {
-        View vDialog = getAddDialog();
-        View eDialog = getAddDialog2();
-        if(DiaryActivity.edit){
-
-        }
-        else if (DiaryActivity.gps) {
-            addDiaryEntry(eDialog);
-        }
-        else {
-            addDiaryEntry(vDialog);
-        }
+        addDiaryEntry(vDialog);
 
     }
 
     private void addDiaryEntry(View v) {
 
         try {
-            String country = countryField.getText().toString();
-            LocalDate date = LocalDate.parse(dateField.getText().toString(), DateTimeFormatter.ofPattern("dd.MM.yyyy"));
-            String description = descriptionField.getText().toString();
+            String country = countryField2.getText().toString();
+            LocalDate date = LocalDate.parse(dateField2.getText().toString(), DateTimeFormatter.ofPattern("dd.MM.yyyy"));
+            String description = descriptionField2.getText().toString();
 
-            DiaryActivity.diaryList.add(new Diary(country, date, description));
+            if (DiaryActivity.edit) {
+                DiaryActivity.currentNote.setCountry(country);
+                DiaryActivity.currentNote.setDate(date);
+                DiaryActivity.currentNote.setDescription(description);
+            }
+            else DiaryActivity.diaryList.add(new Diary(country, date, description));;
+
 
             DiaryActivity.diaryAdapter.notifyDataSetChanged();
             printInput(this.getCurrentFocus());
@@ -217,6 +275,67 @@ public class AddDiary extends AppCompatActivity {
                     RQ_WRITE_STORAGE);
         } else {
             writeToFile(filenameJSON);
+        }
+    }
+
+    private void gpsStuff() {
+        double longitude = -1;
+        double latitude = -1;
+        String address = "";
+        if (gpsGo) {
+            Location location;
+            if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
+                    && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            }
+            location = locationManager.getLastKnownLocation(provider);
+            locationManager.requestLocationUpdates(provider, 2000, 100, new LocationListener() {
+                @Override
+                public void onLocationChanged(Location location) {
+
+                }
+
+                @Override
+                public void onStatusChanged(String provider, int status, Bundle extras) {
+
+                }
+
+                @Override
+                public void onProviderEnabled(String provider) {
+
+                }
+
+                @Override
+                public void onProviderDisabled(String provider) {
+
+                }
+            });
+            if (location != null) {
+                longitude = location.getLongitude();
+                latitude = location.getLatitude();
+            }
+
+            Request_GET task = new Request_GET("https://eu1.locationiq.com/v1/reverse.php?key=" + API_TOKEN + "&lat=" + latitude + "&lon=" + longitude + "&format=json");
+
+            task.execute("");
+            try {
+                Thread.sleep(2000);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+            String jsonResponse = task.getsJsonResponse();
+            try {
+                JSONObject jsonObject = new JSONObject(jsonResponse);
+                address = jsonObject.getString("display_name");
+
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            String[] owo = address.split(", ");
+
+            result = owo[owo.length - 1];
+            //result = "uwu";
+
+
         }
     }
 }

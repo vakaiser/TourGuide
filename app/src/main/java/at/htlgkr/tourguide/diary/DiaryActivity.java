@@ -76,17 +76,10 @@ public class DiaryActivity extends AppCompatActivity {
     //String fullPath;
     public static String filenameJSON = "filefile.json";
 
-    private LocationManager locationManager;
-    private boolean gpsGo = false;
-    private static final String API_TOKEN = "71a976ecac8c81";
-
-    private Criteria criteria;
-    private String provider;
 
     static boolean edit = false;
     static boolean gps = false;
     static Diary currentNote = null;
-    static String result = "";
 
 
 
@@ -98,22 +91,6 @@ public class DiaryActivity extends AppCompatActivity {
         if(diaryList == null) diaryList = new ArrayList<>();
         ListView listView = findViewById(R.id.diary_listview);
         registerForContextMenu(listView);
-
-        //GPS
-        locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
-        if (checkSelfPermission(Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            requestPermissions(new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 23456);
-        } else {
-            gpsGo = true;
-        }
-
-        if (gpsGo) {
-            locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
-            criteria = new Criteria();
-            criteria.setAccuracy(Criteria.ACCURACY_FINE);
-            criteria.setCostAllowed(false);
-            provider = locationManager.getBestProvider(criteria, false);
-        }
 
         voidoDarkuSama(MainActivity.isDarkModeActive);
 
@@ -315,7 +292,6 @@ public class DiaryActivity extends AppCompatActivity {
             case R.id.menu_saveItem:
                 gps = true;
                 edit = false;
-                gpsStuff();
                 Intent in = new Intent(this, AddDiary.class);
                 startActivity(in);
                 //addNewDiaryEntry(vDialog);
@@ -418,63 +394,5 @@ public class DiaryActivity extends AppCompatActivity {
         }
     }
 
-    private void gpsStuff() {
-        double longitude = -1;
-        double latitude = -1;
-        String address = "";
-        if (gpsGo) {
-            Location location;
-            if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
-                    && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            }
-            location = locationManager.getLastKnownLocation(provider);
-            locationManager.requestLocationUpdates(provider, 2000, 100, new LocationListener() {
-                @Override
-                public void onLocationChanged(Location location) {
 
-                }
-
-                @Override
-                public void onStatusChanged(String provider, int status, Bundle extras) {
-
-                }
-
-                @Override
-                public void onProviderEnabled(String provider) {
-
-                }
-
-                @Override
-                public void onProviderDisabled(String provider) {
-
-                }
-            });
-            if (location != null) {
-                longitude = location.getLongitude();
-                latitude = location.getLatitude();
-            }
-
-            Request_GET task = new Request_GET("https://eu1.locationiq.com/v1/reverse.php?key=" + API_TOKEN + "&lat=" + latitude + "&lon=" + longitude + "&format=json");
-
-            task.execute("");
-            try {
-                Thread.sleep(2000);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-            String jsonResponse = task.getsJsonResponse();
-            try {
-                JSONObject jsonObject = new JSONObject(jsonResponse);
-                address = jsonObject.getString("display_name");
-
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-            String[] owo = address.split(", ");
-
-            result = owo[owo.length - 1];
-
-
-        }
-    }
 }
