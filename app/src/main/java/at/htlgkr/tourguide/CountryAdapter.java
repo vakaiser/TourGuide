@@ -129,6 +129,25 @@ public class CountryAdapter extends BaseAdapter {
             case "AEGYPTEN":
                 url = "http://2.bp.blogspot.com/-_8K5c8E0fwc/Tp4kGBcBHuI/AAAAAAAAADo/h467zYIfCzs/s1600/flagge-aegypten.gif";
                 break;
+
+            case "KENIA":
+                url = "https://cdn.webshopapp.com/shops/94414/files/52385976/flagge-von-kenia.jpg";
+                break;
+
+            case "FEUERLAND":
+                url = "https://upload.wikimedia.org/wikipedia/commons/thumb/9/94/Bandera_de_la_Provincia_de_Tierra_del_Fuego.svg/1024px-Bandera_de_la_Provincia_de_Tierra_del_Fuego.svg.png";
+                break;
+
+            case "BOTSWANA":
+                url = "https://www.worldatlas.com/webimage/flags/countrys/zzzflags/bwlarge.gif";//"https://upload.wikimedia.org/wikipedia/commons/f/fa/Flag_of_Botswana.svg";
+                break;
+
+            case "BULGARIEN":
+                url = "https://upload.wikimedia.org/wikipedia/commons/thumb/9/9a/Flag_of_Bulgaria.svg/1000px-Flag_of_Bulgaria.svg.png";
+                break;
+
+            default:
+                url = "https://www.optikunde.de/farbe/image/weiss-white.png";
         }
 
         return url;
