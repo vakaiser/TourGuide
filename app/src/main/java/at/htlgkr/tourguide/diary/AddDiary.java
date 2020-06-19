@@ -231,13 +231,15 @@ public class AddDiary extends AppCompatActivity {
         }
 
         DiaryActivity.diaryAdapter.notifyDataSetChanged();
-        Intent in = new Intent(this, DiaryActivity.class);
-        startActivity(in);
+        /*Intent in = new Intent(this, DiaryActivity.class);
+        startActivity(in);*/
+        finish();
     }
 
     public void notAddEntry(View view) {
-        Intent in = new Intent(this, DiaryActivity.class);
-        startActivity(in);
+        /*Intent in = new Intent(this, DiaryActivity.class);
+        startActivity(in);*/
+        finish();
     }
 
 

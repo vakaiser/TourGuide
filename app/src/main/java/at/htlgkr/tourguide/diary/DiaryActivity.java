@@ -1,6 +1,7 @@
 package at.htlgkr.tourguide.diary;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.Manifest;
@@ -88,6 +89,10 @@ public class DiaryActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_diary);
+
+        ActionBar actionBar =getSupportActionBar();
+        actionBar.setDisplayHomeAsUpEnabled(true);
+
         if(diaryList == null) diaryList = new ArrayList<>();
         ListView listView = findViewById(R.id.diary_listview);
         registerForContextMenu(listView);
@@ -300,6 +305,10 @@ public class DiaryActivity extends AppCompatActivity {
 
             case R.id.menu_deleteJson:
                 deleteAlert(alert);
+                break;
+
+            case android.R.id.home:
+                finish();
                 break;
 
             default:
